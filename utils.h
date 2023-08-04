@@ -1,3 +1,7 @@
+#define NUM_OF_VECTORS cols
+#define VECTORS_LENGTH rows
+
+
 typedef struct _mat
 {
     double **vals;
