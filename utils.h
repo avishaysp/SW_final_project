@@ -18,4 +18,8 @@ typedef struct _vec
 }VECTOR;
 
 
-MAT* initMat(int rows, int cols);
+MAT* initMat(int, int);
+MAT* multiplyMat(MAT*, MAT*);
+double multiplyVec(double*, double*, int);
+double* getColumns(MAT*,int);
+void freeMat(MAT*);
