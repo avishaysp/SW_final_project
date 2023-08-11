@@ -29,7 +29,7 @@ MAT* multiplyMat(MAT* mat1, MAT* mat2){
     MAT* multiMat = initMat(vectorLength, numOfVectors);
     int i, j;
     for (i = 0; i < vectorLength; i++){
-        for (j = 0; j < vectorLength; j++){
+        for (j = 0; j < numOfVectors; j++){
             columns = getColumns(mat2, j);
             multiMat->vals[i][j] = vecMulti(mat1->vals[i], columns, multipleLength);
             free(columns);
@@ -62,7 +62,7 @@ void printMat(MAT* mat){
     int j;
     for(i = 0; i < mat->rows; i++) {
         for(j = 0; j <  mat->cols; j++) {
-            printf("%f, ", mat->vals[i][j]);
+            printf("%f ", mat->vals[i][j]);
         }
         printf("\n");
     }
