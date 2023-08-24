@@ -6,6 +6,7 @@
 #include "symnmf.h"
 #include "utils.h"
 
+typedef MAT (*MatFunction)(MAT*);
 
 
 MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
@@ -26,43 +27,28 @@ MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
     return mat;
 }
 
-static PyObject* sym(PyObject *self, PyObject *args){
+pyObject* convertcMatToPyMat(MAT* matrix){
     
-    pyObject* xVector;
-    int xNumOfVectors, xVectorLength;
-
-    MAT* cVectors;
-    MAT* symMat;
-
     PyObject* pyMatrix;
     PyObject* pyRow;
     PyObject* pyValue;
 
-    int symNumOfVectors, symVectorLength;
-    double** symVals;
+    int matNumOfVectors, matHVectorLength;
+    double** matVals;
     
-
-    if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
-        return NULL;
-    }
     
-    cVectors = convertPyMatToCMat(xVector, xNumOfVectors, xVectorLength);
-
-    symMat = createSymMat(cVectors);
-    freeMat(cVectors);
-
-    symNumOfVectors = symMat->cols;
-    symVectorLength = symMat->rows;
-    symVals = symMat->vals;
+    matNumOfVectors = matrix->cols;
+    matHVectorLength = matrix->rows;
+    matVals = matrix->vals;
     
-    pyMatrix = PyList_New(symNumOfVectors);  // Create a new Python list object for the rows
+    pyMatrix = PyList_New(matNumOfVectors);  // Create a new Python list object for the rows
 
     if (pyMatrix) {
-        for (int i = 0; i < symNumOfVectors; i++) {
-            pyRow = PyList_New(symVectorLength);  // Create a new Python list object for each row
+        for (int i = 0; i < matNumOfVectors; i++) {
+            pyRow = PyList_New(matHVectorLength);  // Create a new Python list object for each row
             if (pyRow) {
-                for (int j = 0; j < symVectorLength; j++) {
-                    pyValue = Py_BuildValue("d", symVals[i][j]);  // Convert C value to Python float
+                for (int j = 0; j < matHVectorLength; j++) {
+                    pyValue = Py_BuildValue("d", matVals[i][j]);  // Convert C value to Python float
                     PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
                 }
             }
@@ -74,52 +60,42 @@ static PyObject* sym(PyObject *self, PyObject *args){
     return pyMatrix;
 }
 
+pyObject* operate(pyObject* pyMat, int NumOfVectors, int VectorLength, MatFunction goal){
+    MAT* cVectors;
+    MAT* finalMat;
+    
+    cVectors = convertPyMatToCMat(pyMat, NumOfVectors, VectorLength);
+
+    finalMat = goal(cVectors);
+    freeMat(cVectors);
+
+    return convertcMatToPyMat(finalMat);
+}
+
+
+//Methods
+static PyObject* sym(PyObject *self, PyObject *args){
+    
+    pyObject* xVector;
+    int xNumOfVectors, xVectorLength;
+
+    if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
+        return NULL;
+    }
+
+    return operate(xVector, xNumOfVectors, xVectorLength, createSymMat);
+}
+
 static PyObject* ddg(PyObject *self, PyObject *args){
     
     pyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
-    MAT* cVectors;
-    MAT* ddgMat;
-
-    PyObject* pyMatrix;
-    PyObject* pyRow;
-    PyObject* pyValue;
-
-    int ddgNumOfVectors, ddgVectorLength;
-    double** ddgVals;
-    
-
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
         return NULL;
     }
-    
-    cVectors = convertPyMatToCMat(xVector, xNumOfVectors, xVectorLength);
 
-    ddgMat = createDdgMat(cVectors);
-    freeMat(cVectors);
-
-    ddgNumOfVectors = symMat->cols;
-    ddgVectorLength = symMat->rows;
-    ddgVals = symMat->vals;
-    
-    pyMatrix = PyList_New(ddgNumOfVectors);  // Create a new Python list object for the rows
-
-    if (pyMatrix) {
-        for (int i = 0; i < ddgNumOfVectors; i++) {
-            pyRow = PyList_New(ddgVectorLength);  // Create a new Python list object for each row
-            if (pyRow) {
-                for (int j = 0; j < ddgVectorLength; j++) {
-                    pyValue = Py_BuildValue("d", ddgVals[i][j]);  // Convert C value to Python float
-                    PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
-                }
-            }
-
-            PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
-        }
-    }
-
-    return pyMatrix;
+    return operate(xVector, xNumOfVectors, xVectorLength, createDdgMat);
 }
 
 static PyObject* norm(PyObject *self, PyObject *args){
@@ -130,44 +106,11 @@ static PyObject* norm(PyObject *self, PyObject *args){
     MAT* cVectors;
     MAT* normMat;
 
-    PyObject* pyMatrix;
-    PyObject* pyRow;
-    PyObject* pyValue;
-
-    int normNumOfVectors, normVectorLength;
-    double** normVals;
-    
-
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
         return NULL;
     }
     
-    cVectors = convertPyMatToCMat(xVector, xNumOfVectors, xVectorLength);
-
-    normMat = createNsmMat(cVectors);
-    freeMat(cVectors);
-
-    normNumOfVectors = symMat->cols;
-    normVectorLength = symMat->rows;
-    normVals = symMat->vals;
-    
-    pyMatrix = PyList_New(normNumOfVectors);  // Create a new Python list object for the rows
-
-    if (pyMatrix) {
-        for (int i = 0; i < normNumOfVectors; i++) {
-            pyRow = PyList_New(normVectorLength);  // Create a new Python list object for each row
-            if (pyRow) {
-                for (int j = 0; j < normVectorLength; j++) {
-                    pyValue = Py_BuildValue("d", normVals[i][j]);  // Convert C value to Python float
-                    PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
-                }
-            }
-
-            PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
-        }
-    }
-
-    return pyMatrix;
+    return operate(xVector, xNumOfVectors, xVectorLength, createNsmMat);
 }
 
 static PyObject* symnmf(PyObject *self, PyObject *args){
@@ -180,15 +123,7 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     double eps;
 
     MAT* cHInitMat, cNormMat;
-    MAT* finalHMat;
-
-    PyObject* pyMatrix;
-    PyObject* pyRow;
-    PyObject* pyValue;
-
-    int finalHNumOfVectors, finalHVectorLength;
-    double** finalHVals;
-    
+    MAT* finalHMat;    
 
     if(!PyArg_ParseTuple(args, "OOiiiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
         return NULL;
@@ -201,30 +136,11 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     freeMat(cHInitMat);
     freeMat(cNormMat);
 
-    finalHNumOfVectors = symMat->cols;
-    finalHVectorLength = symMat->rows;
-    finalHVals = symMat->vals;
-    
-    pyMatrix = PyList_New(finalHNumOfVectors);  // Create a new Python list object for the rows
-
-    if (pyMatrix) {
-        for (int i = 0; i < finalHNumOfVectors; i++) {
-            pyRow = PyList_New(finalHVectorLength);  // Create a new Python list object for each row
-            if (pyRow) {
-                for (int j = 0; j < finalHVectorLength; j++) {
-                    pyValue = Py_BuildValue("d", finalHVals[i][j]);  // Convert C value to Python float
-                    PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
-                }
-            }
-
-            PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
-        }
-    }
-
-    return pyMatrix;
+    return convertcMatToPyMat(finalHMat);
 }
 
 
+//Create api
 static PyMethodDef symnmfMethods[] = {
     {"sym",
       (PyCFunction) sym,
