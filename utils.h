@@ -20,6 +20,4 @@ typedef struct _vec
 
 MAT* initMat(int, int);
 MAT* multiplyMat(MAT*, MAT*);
-double multiplyVec(double*, double*, int);
-double* getColumns(MAT*,int);
 void freeMat(MAT*);

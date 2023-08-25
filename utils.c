@@ -1,10 +1,10 @@
 #include "utils.h"
 
-MAT* initMat(int rows, int cols) {
+MAT* initMat(int cols, int rows) {
     MAT* mat = (MAT*)calloc(1, sizeof(MAT));
     int i = 0;
-    mat->rows = rows;
     mat->cols = cols;
+    mat->rows = rows;
     mat->vals = (double**)calloc(NUM_OF_VECTORS, sizeof(double*));
     for (; i < NUM_OF_VECTORS; i++) {
         mat->vals[i] = (double*)calloc(VECTORS_LENGTH, sizeof(double));
@@ -14,7 +14,7 @@ MAT* initMat(int rows, int cols) {
 
 void freeMat(MAT* mat){
     int i;
-    for(i = 0; i < mat->rows; i++){
+    for(i = 0; i < mat->NUM_OF_VECTORS; i++){
         free(mat->vals[i]);
     }
     free(mat->vals);
@@ -25,14 +25,14 @@ MAT* multiplyMat(MAT* mat1, MAT* mat2){
     int vectorLength = mat1->VECTORS_LENGTH;
     int numOfVectors = mat2->NUM_OF_VECTORS;
     int multipleLength = mat1->NUM_OF_VECTORS;
-    double* columns;
-    MAT* multiMat = initMat(vectorLength, numOfVectors);
+    double* row;
+    MAT* multiMat = initMat(numOfVectors, vectorLength);
     int i, j;
-    for (i = 0; i < vectorLength; i++){
-        for (j = 0; j < numOfVectors; j++){
-            columns = getColumns(mat2, j);
-            multiMat->vals[i][j] = vecMulti(mat1->vals[i], columns, multipleLength);
-            free(columns);
+    for (i = 0; i < numOfVectors; i++){
+        for (j = 0; j < vectorLength; j++){
+            row = getRow(mat1, j);
+            multiMat->vals[i][j] = vecMulti(row, mat1->vals[i], multipleLength);
+            free(row);
         }
     }
     return multiMat;
@@ -47,22 +47,22 @@ double multiplyVec(double* vec1, double* vec2, int length){
     return sum;
 }
 
-double* getColumns(MAT* mat,int j){
-    int size = mat->rows;
-    double* col = (double*)calloc(size, sizeof(double));
+double* getRow(MAT* mat,int j){
+    int size = mat->NUM_OF_VECTORS;
+    double* row = (double*)calloc(size, sizeof(double));
     int i;
     for (i = 0; i < size; i++){
-        col[i] = mat->vals[i][j];
+        row[i] = mat->vals[i][j];
     }
-    return col;
+    return row;
 }
 
 void printMat(MAT* mat){
     int i;
     int j;
-    for(i = 0; i < mat->rows; i++) {
-        for(j = 0; j <  mat->cols; j++) {
-            printf("%f ", mat->vals[i][j]);
+    for(i = 0; i < mat->VECTORS_LENGTH; i++) {
+        for(j = 0; j <  mat->NUM_OF_VECTORS; j++) {
+            printf("%f ", mat->vals[j][i]);
         }
         printf("\n");
     }
