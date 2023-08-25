@@ -1,4 +1,4 @@
-#include "symnmf.h"
+#include "symnmfImp.h"
 #include "ncm.h"
 
 

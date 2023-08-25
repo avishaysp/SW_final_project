@@ -3,7 +3,7 @@
 #include "sym.h"
 #include "ddg.h"
 #include "ncm.h"
-#include "symnmf.h"
+#include "symnmfImp.h"
 #include "utils.h"
 
 typedef MAT (*MatFunction)(MAT*);
