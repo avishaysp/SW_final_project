@@ -1,7 +1,11 @@
 import sys
+import numpy as np
+np.random.seed(0)
+
+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ INPUT HANDLING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 
-class Goal_e:
+class GoalEnum:
     symnmf = 0
     sym = 1
     ddg = 2
@@ -10,12 +14,12 @@ class Goal_e:
     @staticmethod
     def get_goal(g: str) -> int:
         if g == "symnmf":
-            return Goal_e.symnmf
+            return GoalEnum.symnmf
         elif g == "sym":
-            return Goal_e.sym
+            return GoalEnum.sym
         elif g == "ddg":
-            return Goal_e.ddg
-        return Goal_e.norm
+            return GoalEnum.ddg
+        return GoalEnum.norm
 
 
 def get_input():
@@ -26,7 +30,8 @@ def get_input():
     except:
         print("Invalid number of clusters!")
     assert 1 < k < len(vectors_list), "Invalid number of clusters!"
-    goal = Goal_e.get_goal(goal)
+    goal = GoalEnum.get_goal(goal)
+    print(k, goal, vectors_list, sep='\n\n')
     return k, goal, vectors_list
 
 
@@ -39,3 +44,29 @@ def file_to_vectors(file_path):
             vectors.append(vector)
     file.close()
     return vectors
+
+
+def init_H(n, k, m):
+    """
+    :param n:   num of vecs
+    :param k:   num of clusters
+    :param m:   average of all entries of W
+    :return:    H matrix
+    """
+    high = 2 * (m / k) ** 2
+    print(high)
+    return np.random.uniform(high=high, size=(n, k))
+
+
+if __name__ == '__main__':
+    k, goal, vectors_list = get_input()
+    if goal == GoalEnum.symnmf:
+        pass
+    elif goal == GoalEnum.sym:
+        pass
+    elif goal == GoalEnum.ddg:
+        pass
+    elif goal == GoalEnum.norm:
+        pass
+
+# print(init_H(10, 3, 4))
