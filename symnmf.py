@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import symnmfssp
 np.random.seed(0)
 
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ INPUT HANDLING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -31,7 +32,6 @@ def get_input():
         print("Invalid number of clusters!")
     assert 1 < k < len(vectors_list), "Invalid number of clusters!"
     goal = GoalEnum.get_goal(goal)
-    print(k, goal, vectors_list, sep='\n\n')
     return k, goal, vectors_list
 
 
@@ -58,8 +58,9 @@ def init_H(n, k, m):
     return np.random.uniform(high=high, size=(n, k))
 
 
-if __name__ == '__main__':
-    k, goal, vectors_list = get_input()
+def symnmf_main(analysis=False, k=3, goal=GoalEnum.symnmf, vectors_list=None):
+    if not analysis:
+        k, goal, vectors_list = get_input()
     if goal == GoalEnum.symnmf:
         pass
     elif goal == GoalEnum.sym:
@@ -69,4 +70,6 @@ if __name__ == '__main__':
     elif goal == GoalEnum.norm:
         pass
 
-# print(init_H(10, 3, 4))
+
+if __name__ == '__main__':
+    symnmf_main()
