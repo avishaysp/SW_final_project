@@ -1,18 +1,17 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "sym.h"
-#include "ddg.h"
-#include "ncm.h"
 #include "symnmfImp.h"
-#include "utils.h"
 
-typedef MAT (*MatFunction)(MAT*);
+typedef MAT* (*MatFunction)(MAT*);
+
+MAT* convertPyMatToCMat(PyObject*, int, int);
+PyObject* convertcMatToPyMat(MAT*);
+PyObject* operate(PyObject*, int, int, MatFunction);
 
 
 MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
     int i;
     int j;
-    double** vals;
     PyObject* rowPy;
     PyObject* item;
     MAT* mat = initMat(cols, rows);
@@ -27,7 +26,7 @@ MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
     return mat;
 }
 
-pyObject* convertcMatToPyMat(MAT* matrix){
+PyObject* convertcMatToPyMat(MAT* matrix){
     
     PyObject* pyMatrix;
     PyObject* pyRow;
@@ -60,7 +59,7 @@ pyObject* convertcMatToPyMat(MAT* matrix){
     return pyMatrix;
 }
 
-pyObject* operate(pyObject* pyMat, int NumOfVectors, int VectorLength, MatFunction goal){
+PyObject* operate(PyObject* pyMat, int NumOfVectors, int VectorLength, MatFunction goal){
     MAT* cVectors;
     MAT* finalMat;
     
@@ -76,7 +75,7 @@ pyObject* operate(pyObject* pyMat, int NumOfVectors, int VectorLength, MatFuncti
 //Methods
 static PyObject* sym(PyObject *self, PyObject *args){
     
-    pyObject* xVector;
+    PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
@@ -88,7 +87,7 @@ static PyObject* sym(PyObject *self, PyObject *args){
 
 static PyObject* ddg(PyObject *self, PyObject *args){
     
-    pyObject* xVector;
+    PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
@@ -100,11 +99,8 @@ static PyObject* ddg(PyObject *self, PyObject *args){
 
 static PyObject* norm(PyObject *self, PyObject *args){
     
-    pyObject* xVector;
+    PyObject* xVector;
     int xNumOfVectors, xVectorLength;
-
-    MAT* cVectors;
-    MAT* normMat;
 
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
         return NULL;
@@ -115,15 +111,15 @@ static PyObject* norm(PyObject *self, PyObject *args){
 
 static PyObject* symnmf(PyObject *self, PyObject *args){
     
-    pyObject* hMat;
-    pyObject* normMat;
+    PyObject* hMat;
+    PyObject* normMat;
     int hNumOfVectors, hVectorLength;
     int normNumOfVectors, normVectorLength;
     int iter;
     double eps;
 
-    MAT* cHInitMat, cNormMat;
-    MAT* finalHMat;    
+    MAT *cHInitMat, *cNormMat;
+    MAT *finalHMat;    
 
     if(!PyArg_ParseTuple(args, "OOiiiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
         return NULL;
@@ -141,7 +137,7 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
 
 
 //Create api
-static PyMethodDef symnmfMethods[] = {
+static PyMethodDef symnmfMethods_table[] = {
     {"sym",
       (PyCFunction) sym,
       METH_VARARGS,           
@@ -161,18 +157,18 @@ static PyMethodDef symnmfMethods[] = {
     {NULL, NULL, 0, NULL}     
 };
 
-static struct PyModuleDef symnmfMethods = {
+static struct PyModuleDef symnmfMethods_module = {
     PyModuleDef_HEAD_INIT,
     "symnmfssp",
     NULL, 
     -1,  
-    symnmfMethods 
+    symnmfMethods_table 
 };
 
 PyMODINIT_FUNC PyInit_symnmfssp(void)
 {
     PyObject *m;
-    m = PyModule_Create(&symnmfmodule);
+    m = PyModule_Create(&symnmfMethods_module);
     if (!m) {
         return NULL;
     }

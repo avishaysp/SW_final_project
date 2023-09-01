@@ -1,4 +1,3 @@
-#include "utils.h"
 #include "ncm.h"
 
 #define BETA 0.5
