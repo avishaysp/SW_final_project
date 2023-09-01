@@ -38,7 +38,7 @@ MAT* multiplyMat(MAT* mat1, MAT* mat2){
     return multiMat;
 }
 
-double multiplyVec(double* vec1, double* vec2, int length){
+static double multiplyVec(double* vec1, double* vec2, int length){
     int i;
     double sum;
     for (int i = 0; i < length; i++){
@@ -47,7 +47,7 @@ double multiplyVec(double* vec1, double* vec2, int length){
     return sum;
 }
 
-double* getRow(MAT* mat,int j){
+static double* getRow(MAT* mat,int j){
     int size = mat->NUM_OF_VECTORS;
     double* row = (double*)calloc(size, sizeof(double));
     int i;

@@ -19,7 +19,7 @@ MAT* createSymMat(MAT* points){
     return symMat;
 }
 
-double euclidianDistance(double* vector1, double* vector2, int length) {
+static euclidianDistance(double* vector1, double* vector2, int length) {
     double sum = 0.0;
     int i;
     for (i = 0; i < length; i++) {

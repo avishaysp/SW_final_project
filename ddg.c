@@ -12,7 +12,7 @@ MAT* createDdgMat(MAT* points){
     return ddgMat;
 }
 
-double sumRow(MAT* mat, int row){
+static double sumRow(MAT* mat, int row){
     double sum;
     int i;
     for (i = 0; i < mat->NUM_OF_VECTORS; i++){

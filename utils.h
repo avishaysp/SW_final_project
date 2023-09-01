@@ -21,3 +21,4 @@ typedef struct _vec
 MAT* initMat(int, int);
 MAT* multiplyMat(MAT*, MAT*);
 void freeMat(MAT*);
+void printMat(MAT*);

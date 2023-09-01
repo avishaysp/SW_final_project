@@ -14,7 +14,7 @@ MAT* createHMat(MAT* initializeH, MAT* normMAT, int maxIter, double eps){
     return initializeH;
 }
 
-double frobeniusNorm(MAT* mat1, MAT* mat2){
+static double frobeniusNorm(MAT* mat1, MAT* mat2){
     int i, j;
     double norm;
     for(i = 0; i < mat1->cols; i++){
@@ -25,7 +25,7 @@ double frobeniusNorm(MAT* mat1, MAT* mat2){
     return sqrt(norm);
 }
 
-MAT* transformMat(MAT* mat){
+static MAT* transformMat(MAT* mat){
     MAT* tranMat = initMat(mat->rows, mat->cols);
     int i,j;
     for (i = 0; i < tranMat->cols; i++){
@@ -36,7 +36,7 @@ MAT* transformMat(MAT* mat){
     return tranMat;
 }
 
-MAT* createNext(MAT* initializeH, MAT* numeratorMat, MAT* denominatorMat){
+static MAT* createNext(MAT* initializeH, MAT* numeratorMat, MAT* denominatorMat){
     MAT* next = initMat(initializeH->cols, initializeH->rows);
     int i,j;
     for (i = 0; i < next->cols; i++){
@@ -47,7 +47,7 @@ MAT* createNext(MAT* initializeH, MAT* numeratorMat, MAT* denominatorMat){
     return next;
 }
 
-MAT* getNext(MAT* normMAT, MAT* initializeH){
+static MAT* getNext(MAT* normMAT, MAT* initializeH){
     MAT* numeratorMat = multiplyMat(normMAT, initializeH);
     MAT* transformMAt = transformMat(initializeH);
     MAT* denominatorMatLeft = multiplyMat(initializeH, transformMAt);
