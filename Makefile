@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors
-OBJS = utils.o symnmfImp.o sym.o ddg.o
+OBJS = utils.o symnmfImp.o sym.o ddg.o symnmf.o nsm.o
 
 program: $(OBJS)
 	$(CC) $(CFLAGS) -o program $(OBJS)
@@ -16,6 +16,12 @@ sym.o: sym.c sym.h utils.h
 
 ddg.o: ddg.c ddg.h sym.h
 	$(CC) $(CFLAGS) -c ddg.c
+
+symnmf.o: symnmf.c symnmf.h
+	$(CC) $(CFLAGS) -c symnmf.c
+
+nsm.o: nsm.c ncm.h
+	$(CC) $(CFLAGS) -c nsm.c
 
 clean:
 	rm -f $(OBJS) program
