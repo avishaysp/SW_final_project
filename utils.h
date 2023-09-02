@@ -1,4 +1,7 @@
+#pragma once
 #include <stdlib.h>
+#include <stdio.h>
+
 
 #define NUM_OF_VECTORS cols
 #define VECTORS_LENGTH rows

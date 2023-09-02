@@ -1,5 +1,13 @@
 #include "sym.h"
 
+static double euclidianDistance(double* vector1, double* vector2, int length) {
+    double sum = 0.0;
+    int i;
+    for (i = 0; i < length; i++) {
+        sum += pow(vector1[i] - vector2[i], 2);
+    }
+    return sqrt(sum);
+}
 
 MAT* createSymMat(MAT* points){
     int numOfVectors = points->NUM_OF_VECTORS;
@@ -17,13 +25,4 @@ MAT* createSymMat(MAT* points){
         }
     }
     return symMat;
-}
-
-static euclidianDistance(double* vector1, double* vector2, int length) {
-    double sum = 0.0;
-    int i;
-    for (i = 0; i < length; i++) {
-        sum += pow(vector1[i] - vector2[i], 2);
-    }
-    return sqrt(sum);
 }

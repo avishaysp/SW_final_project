@@ -21,27 +21,10 @@ void freeMat(MAT* mat){
     free(mat);
 }
 
-MAT* multiplyMat(MAT* mat1, MAT* mat2){
-    int vectorLength = mat1->VECTORS_LENGTH;
-    int numOfVectors = mat2->NUM_OF_VECTORS;
-    int multipleLength = mat1->NUM_OF_VECTORS;
-    double* row;
-    MAT* multiMat = initMat(numOfVectors, vectorLength);
-    int i, j;
-    for (i = 0; i < numOfVectors; i++){
-        for (j = 0; j < vectorLength; j++){
-            row = getRow(mat1, j);
-            multiMat->vals[i][j] = vecMulti(row, mat1->vals[i], multipleLength);
-            free(row);
-        }
-    }
-    return multiMat;
-}
-
 static double multiplyVec(double* vec1, double* vec2, int length){
     int i;
-    double sum;
-    for (int i = 0; i < length; i++){
+    double sum = 0.0;
+    for (i = 0; i < length; i++){
         sum += vec1[i] * vec2[i];
     }
     return sum;
@@ -66,4 +49,21 @@ void printMat(MAT* mat){
         }
         printf("\n");
     }
+}
+
+MAT* multiplyMat(MAT* mat1, MAT* mat2){
+    int vectorLength = mat1->VECTORS_LENGTH;
+    int numOfVectors = mat2->NUM_OF_VECTORS;
+    int multipleLength = mat1->NUM_OF_VECTORS;
+    double* row;
+    MAT* multiMat = initMat(numOfVectors, vectorLength);
+    int i, j;
+    for (i = 0; i < numOfVectors; i++){
+        for (j = 0; j < vectorLength; j++){
+            row = getRow(mat1, j);
+            multiMat->vals[i][j] = multiplyVec(row, mat1->vals[i], multipleLength);
+            free(row);
+        }
+    }
+    return multiMat;
 }

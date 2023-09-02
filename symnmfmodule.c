@@ -86,7 +86,7 @@ static PyObject* sym(PyObject *self, PyObject *args){
 }
 
 static PyObject* ddg(PyObject *self, PyObject *args){
-    
+
     PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
@@ -98,19 +98,19 @@ static PyObject* ddg(PyObject *self, PyObject *args){
 }
 
 static PyObject* norm(PyObject *self, PyObject *args){
-    
+
     PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
         return NULL;
     }
-    
+
     return operate(xVector, xNumOfVectors, xVectorLength, createNsmMat);
 }
 
 static PyObject* symnmf(PyObject *self, PyObject *args){
-    
+
     PyObject* hMat;
     PyObject* normMat;
     int hNumOfVectors, hVectorLength;
@@ -119,12 +119,12 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     double eps;
 
     MAT *cHInitMat, *cNormMat;
-    MAT *finalHMat;    
+    MAT *finalHMat;
 
     if(!PyArg_ParseTuple(args, "OOiiiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
         return NULL;
     }
-    
+
     cHInitMat = convertPyMatToCMat(hMat, hNumOfVectors, hVectorLength);
     cNormMat = convertPyMatToCMat(normMat, normNumOfVectors, normVectorLength);
 
@@ -144,15 +144,15 @@ static PyMethodDef symnmfMethods_table[] = {
       PyDoc_STR("Calculate the symetric matrix of a set of data points")},
     {"ddg",
       (PyCFunction) ddg,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the diagonal degree matrix of a set of data points")},
     {"norm",
       (PyCFunction) norm,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the normalized similarity matrix of a set of data points")},
     {"symnmf",
       (PyCFunction) symnmf,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the optimized H matrix given the inialize one, norm matrix, max iteration and eps")},
     {NULL, NULL, 0, NULL}     
 };
