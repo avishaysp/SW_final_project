@@ -121,7 +121,7 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     MAT *cHInitMat, *cNormMat;
     MAT *finalHMat;
 
-    if(!PyArg_ParseTuple(args, "OOiiiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
+    if(!PyArg_ParseTuple(args, "OiiOiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
         return NULL;
     }
 
