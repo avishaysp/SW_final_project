@@ -1,20 +1,8 @@
-#include "utils.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "utils.h"
 
 
-typedef struct Cord
-{
-    double value;
-    struct Cord *next;
-}CORD;
+MAT* readCSVtoMatrix(const char*);
 
-typedef struct Vector
-{
-    struct Vector *next;
-    CORD *cords;
-}VECTOR;
-
-MAT* createDataMatrix(void);
-void deleteList(VECTOR*);
-void deleteCords(CORD*);
-VECTOR* getInput(int*, int*);

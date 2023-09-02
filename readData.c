@@ -1,86 +1,61 @@
 #include "readData.h"
 
-MAT* createDataMatrix(void){
-    int i, j;
-    int numberOfVectors = 0, vectorsLength = 0;
-    MAT* mat;
-    VECTOR* input_vec = getInput(&numberOfVectors, &vectorsLength);
-    CORD* c;
-    VECTOR* head = input_vec;
-    VECTOR* curr_vec = head;
-    int num = numberOfVectors;
-    int length = vectorsLength;
-    mat = initMat(num, length);
-    for(i = 0; i < num; i++){
-        c = curr_vec -> cords;
-        for(j = 0; j < length; j++){
-            mat->vals[i][j] = c -> value;
-            if (j < length - 1) {
-                c = c -> next;
+MAT*  readCSVtoMatrix(const char* filename) {
+    FILE* file = fopen(filename, "r");
+    if (!file) {
+        printf("Failed to open file.\n");
+        return NULL;
+    }
+
+    // Determine the length of the first line
+    fseek(file, 0, SEEK_SET);     // Move to beginning of file
+    char dummy;  // For reading the file character by character
+    int lineLength = 0;
+    while (fread(&dummy, 1, 1, file) && dummy != '\n') {
+        lineLength++;
+    }
+    lineLength += 2;  // Adjust for potential '\r' (in case of CRLF line endings) and null terminator
+    char* line = (char*)malloc(lineLength * sizeof(char));
+
+    int rowCount = 0;
+    int colCount = 0;
+
+    // Count rows and columns
+    fseek(file, 0, SEEK_SET);  // Move back to the start of the file
+    while (fgets(line, lineLength, file)) {
+        if (strlen(line) <= 1) {
+            break; // Empty line or last line
+        }
+        if (rowCount == 0) {
+            // Count number of columns based on number of commas
+            char* token = strtok(line, ",");
+            while (token) {
+                colCount++;
+                token = strtok(NULL, ",");
             }
         }
-        curr_vec = curr_vec -> next;
+        rowCount++;
     }
-    deleteList(head);
-    return mat;
-}
 
+    MAT* matrix = initMat(rowCount, colCount);
 
-void deleteCords(CORD* head) {
-    if (head != NULL) {
-        deleteCords(head->next);
-        free(head);
-    }
-}
-
-void deleteList(VECTOR* vec){
-    if (vec != NULL) {
-        deleteList(vec->next);
-        deleteCords(vec->cords);
-        free(vec);
-    }
-}
-
-VECTOR* getInput(int* numOfVectors, int* vectorsLength)
-{
-    VECTOR *head_vec, *curr_vec;
-    CORD *head_cord, *curr_cord;
-    int num = 0, length = 1;
-    double n;
-    char c;
-
-    head_cord = (CORD*)malloc(sizeof(CORD));
-    curr_cord = head_cord;
-    curr_cord->next = NULL;
-
-    head_vec = (VECTOR*)malloc(sizeof(VECTOR));
-    curr_vec = head_vec;
-    curr_vec->next = NULL;
-
-    while (scanf("%lf%c", &n, &c) == 2) {
-        if (c == '\n') {
-            num++;
-            curr_cord->value = n;
-            curr_vec->cords = head_cord;
-            curr_vec->next = (VECTOR*)malloc(sizeof(VECTOR));
-            curr_vec = curr_vec->next;
-            curr_vec->next = NULL;
-            head_cord = (CORD*)malloc(sizeof(CORD));
-            curr_cord = head_cord;
-            curr_cord->next = NULL;
-            continue;
+    // Rewind the file to start and read the values into the matrix
+    fseek(file, 0, SEEK_SET);
+    int row = 0;
+    while (fgets(line, lineLength, file) && row < rowCount) {
+        char* token = strtok(line, ",");
+        int col = 0;
+        while (token) {
+            matrix->vals[row][col] = atof(token);
+            col++;
+            token = strtok(NULL, ",");
         }
-        if (num == 0) {
-            length++;
-        }
-        curr_cord->value = n;
-        curr_cord->next = (CORD*)malloc(sizeof(CORD));
-        curr_cord = curr_cord->next;
-        curr_cord->next = NULL;
+        row++;
     }
-    *numOfVectors = num;
-    *vectorsLength = length;
-    return head_vec;
-}
 
+    free(line);
+    fclose(file);
+
+    return matrix;
+}
 
