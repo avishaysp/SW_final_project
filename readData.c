@@ -10,7 +10,7 @@ MAT*  readCSVtoMatrix(const char* filename) {
     int row;
     FILE* file = fopen(filename, "r");
     if (!file) {
-        printf("Failed to open file.\n");
+        printf("An Error Has Occurred\n");
         return NULL;
     }
 

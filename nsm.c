@@ -10,13 +10,7 @@ MAT* createNsmMat(MAT* points){
     for(i = 0; i < numOfVectors; i++){
         ddgMat->vals[i][i] = 1 / (sqrt(ddgMat->vals[i][i]));
     }
-    printMat(ddgMat);
-    printf("-----------------\n");
-    printMat(symMat);
     leftMult = multiplyMat(ddgMat, symMat);
-    printf("-----------------\n");
-    printMat(leftMult);
-    printf("-----------------\n");
     nsmMat = multiplyMat(leftMult, ddgMat);
     freeMat(leftMult);
     freeMat(symMat);
