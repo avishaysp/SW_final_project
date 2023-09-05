@@ -72,7 +72,7 @@ def _calc_m(w):
 
 def print_vectors(centroids_list):
     for centroid in centroids_list:
-        print(",".join([str(round(x, 4)) for x in centroid]))
+        print(",".join([f"{x:.4f}" for x in centroid]))
     print()
 
 
