@@ -4,7 +4,7 @@ static double sumRow(MAT* mat, int row){
     double sum = 0.0;
     int i;
     for (i = 0; i < mat->NUM_OF_VECTORS; i++){
-        sum += mat->vals[i][row];
+        sum += mat->vals[row][i];
     }
     return sum;
 }

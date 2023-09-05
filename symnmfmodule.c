@@ -9,16 +9,16 @@ PyObject* convertcMatToPyMat(MAT*);
 PyObject* operate(PyObject*, int, int, MatFunction);
 
 
-MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
+MAT* convertPyMatToCMat(PyObject* matrix, int rows, int cols){
     int i;
     int j;
     PyObject* rowPy;
     PyObject* item;
-    MAT* mat = initMat(cols, rows);
+    MAT* mat = initMat(rows, cols);
 
-    for (i = 0; i < cols; i++) {
+    for (i = 0; i < rows; i++) {
         rowPy = PyList_GetItem(matrix, i);
-        for (j = 0; j < rows; j++) {
+        for (j = 0; j < cols; j++) {
             item = PyList_GetItem(rowPy, j);
             mat->vals[i][j] = PyFloat_AsDouble(item);
         }
@@ -36,8 +36,8 @@ PyObject* convertcMatToPyMat(MAT* matrix){
     double** matVals;
     
     
-    matNumOfVectors = matrix->cols;
-    matHVectorLength = matrix->rows;
+    matNumOfVectors = matrix->NUM_OF_VECTORS;
+    matHVectorLength = matrix->VECTORS_LENGTH;
     matVals = matrix->vals;
     
     pyMatrix = PyList_New(matNumOfVectors);  // Create a new Python list object for the rows
@@ -51,7 +51,6 @@ PyObject* convertcMatToPyMat(MAT* matrix){
                     PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
                 }
             }
-
             PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
         }
     }

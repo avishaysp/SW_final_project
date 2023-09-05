@@ -1,10 +1,10 @@
 #include "utils.h"
 
-MAT* initMat(int cols, int rows) {
+MAT* initMat(int rows, int cols) {
     MAT* mat = (MAT*)calloc(1, sizeof(MAT));
     int i = 0;
-    mat->cols = cols;
     mat->rows = rows;
+    mat->cols = cols;
     mat->vals = (double**)calloc(NUM_OF_VECTORS, sizeof(double*));
     for (; i < NUM_OF_VECTORS; i++) {
         mat->vals[i] = (double*)calloc(VECTORS_LENGTH, sizeof(double));
@@ -21,49 +21,38 @@ void freeMat(MAT* mat){
     free(mat);
 }
 
-static double multiplyVec(double* vec1, double* vec2, int length){
-    int i;
-    double sum = 0.0;
-    for (i = 0; i < length; i++){
-        sum += vec1[i] * vec2[i];
-    }
-    return sum;
-}
-
-static double* getRow(MAT* mat,int j){
-    int size = mat->NUM_OF_VECTORS;
-    double* row = (double*)calloc(size, sizeof(double));
-    int i;
-    for (i = 0; i < size; i++){
-        row[i] = mat->vals[i][j];
-    }
-    return row;
-}
-
 void printMat(MAT* mat){
     int i;
     int j;
-    for(i = 0; i < mat->VECTORS_LENGTH; i++) {
-        for(j = 0; j <  mat->NUM_OF_VECTORS; j++) {
-            printf("%f ", mat->vals[j][i]);
+    for(i = 0; i < mat->NUM_OF_VECTORS; i++) {
+        for(j = 0; j <  mat->VECTORS_LENGTH; j++) {
+            printf("%f ", mat->vals[i][j]);
         }
         printf("\n");
     }
+    printf("\n");
 }
 
 MAT* multiplyMat(MAT* mat1, MAT* mat2){
-    int vectorLength = mat1->VECTORS_LENGTH;
-    int numOfVectors = mat2->NUM_OF_VECTORS;
-    int multipleLength = mat1->NUM_OF_VECTORS;
-    double* row;
-    MAT* multiMat = initMat(numOfVectors, vectorLength);
-    int i, j;
-    for (i = 0; i < numOfVectors; i++){
-        for (j = 0; j < vectorLength; j++){
-            row = getRow(mat1, j);
-            multiMat->vals[i][j] = multiplyVec(row, mat1->vals[i], multipleLength);
-            free(row);
+    MAT* multiMat;
+    int i, j, k;
+    double sum;
+    int numRows1 = mat1->NUM_OF_VECTORS;
+    int numCols1 = mat1->VECTORS_LENGTH;
+    int numCols2 = mat2->VECTORS_LENGTH;
+
+    multiMat = initMat(numRows1, numCols2);
+
+    for (i = 0; i < numRows1; i++) {
+        for (j = 0; j < numCols2; j++) {
+            sum = 0.0;
+            for (k = 0; k < numCols1; k++) {
+                sum += mat1->vals[i][k] * mat2->vals[k][j];
+            }
+            multiMat->vals[i][j] = sum;
         }
     }
+
     return multiMat;
 }
+
