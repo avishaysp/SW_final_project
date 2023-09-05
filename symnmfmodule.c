@@ -39,7 +39,8 @@ PyObject* convertcMatToPyMat(MAT* matrix){
     matNumOfVectors = matrix->NUM_OF_VECTORS;
     matHVectorLength = matrix->VECTORS_LENGTH;
     matVals = matrix->vals;
-    
+
+
     pyMatrix = PyList_New(matNumOfVectors);  // Create a new Python list object for the rows
 
     if (pyMatrix) {
@@ -128,7 +129,6 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     cNormMat = convertPyMatToCMat(normMat, normNumOfVectors, normVectorLength);
 
     finalHMat = createHMat(cHInitMat, cNormMat, iter, eps);
-    freeMat(cHInitMat);
     freeMat(cNormMat);
 
     return convertcMatToPyMat(finalHMat);

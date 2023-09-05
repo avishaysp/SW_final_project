@@ -6,7 +6,7 @@ static double frobeniusNorm(MAT* mat1, MAT* mat2){
     int i, j;
     double norm = 0.0;
     for(i = 0; i < mat1->rows; i++){
-        for(j = 0; j <  mat1->cols; i++){
+        for(j = 0; j <  mat1->cols; j++){
             norm += pow(mat1->vals[i][j] - mat2->vals[i][j], 2);
         }
     }
@@ -50,10 +50,13 @@ static MAT* getNext(MAT* normMAT, MAT* initializedH){
 
 MAT* createHMat(MAT* initializedH, MAT* normMAT, int maxIter, double eps){
     MAT* nextMat = getNext(normMAT, initializedH);
-    while (frobeniusNorm(nextMat, initializedH) >= eps || maxIter > 0){
+    MAT* toFree;
+    while (frobeniusNorm(nextMat, initializedH) >= eps && maxIter > 0){
+        toFree = initializedH;
         initializedH = nextMat;
-        freeMat(nextMat);
+        freeMat(toFree);
         nextMat = getNext(normMAT, initializedH);
+        maxIter--;
     }
     freeMat(nextMat);
     return initializedH;

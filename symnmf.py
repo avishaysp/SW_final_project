@@ -56,8 +56,8 @@ def init_h(n, k, m):
     :param m:   average of all entries of W
     :return:    H matrix
     """
-    high = 2 * (m / k) ** 2
-    return np.random.uniform(high=high, size=(n, k))
+    high = 2 * (m / k) ** 0.5
+    return np.random.uniform(high=high, size=(n, k)).tolist()
 
 
 def _calc_m(w):
