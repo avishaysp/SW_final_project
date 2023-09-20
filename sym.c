@@ -6,6 +6,7 @@ static double euclidianDistance(double* vector1, double* vector2, int length) {
     for (i = 0; i < length; i++) {
         sum += pow(vector1[i] - vector2[i], 2);
         printf("%f %f\n", vector1[i], vector2[i]);
+
     }
     return sqrt(sum);
 }
@@ -22,6 +23,7 @@ MAT* createSymMat(MAT* points){
             } else{
                 val = -0.5 * euclidianDistance(points->vals[i], points->vals[j], points->VECTORS_LENGTH);
                 printf("%d %d %f\n", i, j, val);
+                printf("#############");
                 symMat->vals[i][j] = exp(val);
             }
         }
