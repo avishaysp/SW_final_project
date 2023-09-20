@@ -5,6 +5,7 @@ static double euclidianDistance(double* vector1, double* vector2, int length) {
     int i;
     for (i = 0; i < length; i++) {
         sum += pow(vector1[i] - vector2[i], 2);
+        printf("%f %f", vector1[i], vector2[i]);
     }
     return sqrt(sum);
 }
