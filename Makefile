@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors
+CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors -lm
 OBJS = utils.o symnmfImp.o sym.o ddg.o symnmf.o nsm.o readData.o
 
 program: $(OBJS)
