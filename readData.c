@@ -1,18 +1,19 @@
 #include "readData.h"
 
-static int maxCharsInRow(const char *csvFilePath) {
+static int maxCharsInRow(FILE *csvFile) {
     int maxChars = 0;
     int currentChars = 0;
     int c;
 
-    FILE *file = fopen(csvFilePath, "r");
-    if (file == NULL) {
+    if (csvFile == NULL) {
         printf("An Error Has Occurred\n");
         return -1;
     }
 
-    while ((c = fgetc(file)) != EOF) {
-        if (c != '\n') {
+    rewind(csvFile);
+
+    while ((c = fgetc(csvFile)) != EOF) {
+        if (c != '\n' && c != '\r') {
             currentChars++;
         } else {
             if (currentChars > maxChars) {
@@ -26,15 +27,12 @@ static int maxCharsInRow(const char *csvFilePath) {
         maxChars = currentChars;
     }
 
-    rewind(file);
-
-    fclose(file);
-
+    rewind(csvFile);
     return maxChars;
 }
 
 
-MAT*  readCSVtoMatrix(const char* filename) {
+MAT*  readCSVtoMatrix(const char* fileName) {
     char dummy;
     int rowCount = 0;
     int colCount = 0;
@@ -42,8 +40,9 @@ MAT*  readCSVtoMatrix(const char* filename) {
     MAT* matrix;
     int row;
     int maxLineLength;
-    FILE* file = fopen(filename, "r");
-    maxLineLength = maxCharsInRow(filename);
+    FILE* file;
+    file = fopen(fileName, "r");
+    maxLineLength = maxCharsInRow(file);
     if (!file) {
         printf("An Error Has Occurred\n");
         return NULL;
