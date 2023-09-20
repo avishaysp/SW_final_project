@@ -10,7 +10,7 @@ static int maxCharsInRow(FILE *csvFile) {
         return -1;
     }
 
-    rewind(csvFile);
+     fseek(csvFile, 0, SEEK_SET);
 
     while ((c = fgetc(csvFile)) != EOF) {
         if (c != '\n' && c != '\r') {
@@ -27,8 +27,8 @@ static int maxCharsInRow(FILE *csvFile) {
         maxChars = currentChars;
     }
 
-    rewind(csvFile);
-    return maxChars;
+    fseek(csvFile, 0, SEEK_SET);
+    return maxChars + 2;
 }
 
 
@@ -62,12 +62,6 @@ MAT*  readCSVtoMatrix(const char* fileName) {
     while (fgets(line, maxLineLength, file)) {
         if (strlen(line) <= 1) {
             break;
-        }
-        if (rowCount == 0) {
-            char* token = strtok(line, ",");
-            while (token) {
-                token = strtok(NULL, ",");
-            }
         }
         rowCount++;
     }
