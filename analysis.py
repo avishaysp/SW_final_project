@@ -6,7 +6,7 @@ from symnmf import symnmf_main, GoalEnum
 
 MAX_ITER = 300
 EPS = 10 ** (-4)
-K = 3
+K = 6
 
 
 def get_input():
