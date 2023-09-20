@@ -70,7 +70,7 @@ MAT*  readCSVtoMatrix(const char* fileName) {
 
     fseek(file, 0, SEEK_SET);
     row = 0;
-    while (fgets(line, colCount, file) && row < rowCount) {
+    while (fgets(line, maxLineLength, file) && row < rowCount) {
         char* token = strtok(line, ",");
         int col = 0;
         while (token) {
