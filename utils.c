@@ -26,7 +26,12 @@ void printMat(MAT* mat){
     int j;
     for(i = 0; i < mat->NUM_OF_VECTORS; i++) {
         for(j = 0; j <  mat->VECTORS_LENGTH; j++) {
-            printf("%.4f ", mat->vals[i][j]);
+            printf("%.4f", mat->vals[i][j]);
+            if (j < mat->VECTORS_LENGTH - 1)
+            {
+                printf(",");
+            }
+
         }
         printf("\n");
     }
