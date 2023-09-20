@@ -20,6 +20,7 @@ MAT* createSymMat(MAT* points){
                 symMat->vals[i][j] = 0;
             } else{
                 val = -0.5 * euclidianDistance(points->vals[i], points->vals[j], points->VECTORS_LENGTH);
+                printf("%d %d %f\n", i, j, val);
                 symMat->vals[i][j] = exp(val);
             }
         }
