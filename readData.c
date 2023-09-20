@@ -72,8 +72,6 @@ MAT*  readCSVtoMatrix(const char* fileName) {
         rowCount++;
     }
 
-    printf("%d %d\n", rowCount, colCount);
-
     matrix = initMat(rowCount, colCount);
 
     fseek(file, 0, SEEK_SET);
