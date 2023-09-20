@@ -3,8 +3,7 @@ import copy
 
 
 def hw1_main(k, max_iter, vectors_list):
-    centroids_list = kmeans(k, vectors_list, max_iter)
-    return [round_vector(centroid) for centroid in centroids_list]
+    return kmeans(k, vectors_list, max_iter)
 
 
 def parse_file(file_path):

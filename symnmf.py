@@ -32,8 +32,8 @@ def get_input():
     try:
         k = int(k)
     except:
-        print("Invalid number of clusters!")
-    assert 1 < k < len(vectors_list), "Invalid number of clusters!"
+        print("An Error Has Occurred")
+    assert 1 < k < len(vectors_list), "An Error Has Occurred"
     goal = GoalEnum.get_goal(goal)
     return k, goal, vectors_list
 
@@ -92,6 +92,8 @@ def symnmf_main(analysis=False, k=3, goal=GoalEnum.symnmf, vectors_list=None):
     else:
         print("an error has occurred")
         raise Exception
+    if analysis:
+        return result
     print_vectors(result)
 
 
