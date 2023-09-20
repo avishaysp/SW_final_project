@@ -41,28 +41,28 @@ MAT*  readCSVtoMatrix(const char* filename) {
     char* line;
     MAT* matrix;
     int row;
-    int lineLength;
+    int maxLineLength;
     FILE* file = fopen(filename, "r");
+    maxLineLength = maxCharsInRow(filename);
     if (!file) {
         printf("An Error Has Occurred\n");
         return NULL;
     }
 
-    fseek(file, 0, SEEK_SET);     
+    fseek(file, 0, SEEK_SET);
     while (fread(&dummy, 1, 1, file) && dummy != '\n') {
         if (dummy == ','){
             colCount++;
         }
     }
     colCount += 1;
-    lineLength = 15 * colCount;
-    line = (char*)malloc(lineLength * sizeof(char));
+    line = (char*)malloc(maxLineLength * sizeof(char));
 
     fseek(file, 0, SEEK_SET);
 
-    while (fgets(line, lineLength, file)) {
+    while (fgets(line, maxLineLength, file)) {
         if (strlen(line) <= 1) {
-            break; 
+            break;
         }
         if (rowCount == 0) {
             char* token = strtok(line, ",");
