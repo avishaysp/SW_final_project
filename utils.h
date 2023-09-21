@@ -1,22 +1,18 @@
+#pragma once
 #include <stdlib.h>
+#include <stdio.h>
 
-#define NUM_OF_VECTORS cols
-#define VECTORS_LENGTH rows
+
+#define NUM_OF_VECTORS rows
+#define VECTORS_LENGTH cols
 
 
 typedef struct _mat
 {
     double **vals;
-    int cols;
     int rows;
+    int cols;
 }MAT;
-
-typedef struct _vec
-{
-    double *vals;
-    int length;
-}VECTOR;
-
 
 MAT* initMat(int, int);
 MAT* multiplyMat(MAT*, MAT*);

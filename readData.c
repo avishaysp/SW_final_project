@@ -1,48 +1,76 @@
 #include "readData.h"
 
-MAT*  readCSVtoMatrix(const char* filename) {
-    FILE* file = fopen(filename, "r");
+static int maxCharsInRow(FILE *csvFile) {
+    int maxChars = 0;
+    int currentChars = 0;
+    int c;
+
+    if (csvFile == NULL) {
+        printf("An Error Has Occurred\n");
+        return -1;
+    }
+
+     fseek(csvFile, 0, SEEK_SET);
+
+    while ((c = fgetc(csvFile)) != EOF) {
+        if (c != '\n' && c != '\r') {
+            currentChars++;
+        } else {
+            if (currentChars > maxChars) {
+                maxChars = currentChars;
+            }
+            currentChars = 0;
+        }
+    }
+
+    if (currentChars > maxChars) {
+        maxChars = currentChars;
+    }
+
+    fseek(csvFile, 0, SEEK_SET);
+    return maxChars + 2;
+}
+
+
+MAT*  readCSVtoMatrix(const char* fileName) {
+    char dummy;
+    int rowCount = 0;
+    int colCount = 0;
+    char* line;
+    MAT* matrix;
+    int row;
+    int maxLineLength;
+    FILE* file;
+    file = fopen(fileName, "r");
+    maxLineLength = maxCharsInRow(file);
     if (!file) {
-        printf("Failed to open file.\n");
+        printf("An Error Has Occurred\n");
         return NULL;
     }
 
-    // Determine the length of the first line
-    fseek(file, 0, SEEK_SET);     // Move to beginning of file
-    char dummy;  // For reading the file character by character
-    int lineLength = 0;
+    fseek(file, 0, SEEK_SET);
     while (fread(&dummy, 1, 1, file) && dummy != '\n') {
-        lineLength++;
-    }
-    lineLength += 2;  // Adjust for potential '\r' (in case of CRLF line endings) and null terminator
-    char* line = (char*)malloc(lineLength * sizeof(char));
-
-    int rowCount = 0;
-    int colCount = 0;
-
-    // Count rows and columns
-    fseek(file, 0, SEEK_SET);  // Move back to the start of the file
-    while (fgets(line, lineLength, file)) {
-        if (strlen(line) <= 1) {
-            break; // Empty line or last line
+        if (dummy == ','){
+            colCount++;
         }
-        if (rowCount == 0) {
-            // Count number of columns based on number of commas
-            char* token = strtok(line, ",");
-            while (token) {
-                colCount++;
-                token = strtok(NULL, ",");
-            }
+    }
+    colCount += 1;
+    line = (char*)malloc(maxLineLength * sizeof(char));
+
+    fseek(file, 0, SEEK_SET);
+
+    while (fgets(line, maxLineLength, file)) {
+        if (strlen(line) <= 1) {
+            break;
         }
         rowCount++;
     }
 
-    MAT* matrix = initMat(rowCount, colCount);
+    matrix = initMat(rowCount, colCount);
 
-    // Rewind the file to start and read the values into the matrix
     fseek(file, 0, SEEK_SET);
-    int row = 0;
-    while (fgets(line, lineLength, file) && row < rowCount) {
+    row = 0;
+    while (fgets(line, maxLineLength, file) && row < rowCount) {
         char* token = strtok(line, ",");
         int col = 0;
         while (token) {

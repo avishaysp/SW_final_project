@@ -3,12 +3,10 @@ import copy
 
 
 def hw1_main(k, max_iter, vectors_list):
-    centroids_list = kmeans(k, vectors_list, max_iter)
-    return [round_vector(centroid) for centroid in centroids_list]
+    return kmeans(k, vectors_list, max_iter)
 
 
 def parse_file(file_path):
-    #convert file into list of vectors
     with open(file_path, 'r') as file:
         vectors = []
         for line in file:
@@ -27,7 +25,7 @@ def kmeans(k: int, vectors_list: list, max_iter, eps=0.001):
     centroids = [(vectors_list_copy[i], []) for i in range(k)]
     iteration_number = 0
     max_miu_k = math.inf
-    while (iteration_number < max_iter and max_miu_k >= eps):
+    while iteration_number < max_iter and max_miu_k >= eps:
         for x in vectors_list:
             closest_centroid = min(centroids, key=lambda centroid : euclidean_dis(x, centroid[0]))
             closest_centroid[1].append(x)

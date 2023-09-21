@@ -9,16 +9,16 @@ PyObject* convertcMatToPyMat(MAT*);
 PyObject* operate(PyObject*, int, int, MatFunction);
 
 
-MAT* convertPyMatToCMat(PyObject* matrix, int cols, int rows){
+MAT* convertPyMatToCMat(PyObject* matrix, int rows, int cols){
     int i;
     int j;
     PyObject* rowPy;
     PyObject* item;
-    MAT* mat = initMat(cols, rows);
+    MAT* mat = initMat(rows, cols);
 
-    for (i = 0; i < cols; i++) {
+    for (i = 0; i < rows; i++) {
         rowPy = PyList_GetItem(matrix, i);
-        for (j = 0; j < rows; j++) {
+        for (j = 0; j < cols; j++) {
             item = PyList_GetItem(rowPy, j);
             mat->vals[i][j] = PyFloat_AsDouble(item);
         }
@@ -36,10 +36,11 @@ PyObject* convertcMatToPyMat(MAT* matrix){
     double** matVals;
     
     
-    matNumOfVectors = matrix->cols;
-    matHVectorLength = matrix->rows;
+    matNumOfVectors = matrix->NUM_OF_VECTORS;
+    matHVectorLength = matrix->VECTORS_LENGTH;
     matVals = matrix->vals;
-    
+
+
     pyMatrix = PyList_New(matNumOfVectors);  // Create a new Python list object for the rows
 
     if (pyMatrix) {
@@ -51,7 +52,6 @@ PyObject* convertcMatToPyMat(MAT* matrix){
                     PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
                 }
             }
-
             PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
         }
     }
@@ -86,7 +86,7 @@ static PyObject* sym(PyObject *self, PyObject *args){
 }
 
 static PyObject* ddg(PyObject *self, PyObject *args){
-    
+
     PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
@@ -98,19 +98,19 @@ static PyObject* ddg(PyObject *self, PyObject *args){
 }
 
 static PyObject* norm(PyObject *self, PyObject *args){
-    
+
     PyObject* xVector;
     int xNumOfVectors, xVectorLength;
 
     if(!PyArg_ParseTuple(args, "Oii", &xVector, &xNumOfVectors, &xVectorLength)) {
         return NULL;
     }
-    
+
     return operate(xVector, xNumOfVectors, xVectorLength, createNsmMat);
 }
 
 static PyObject* symnmf(PyObject *self, PyObject *args){
-    
+
     PyObject* hMat;
     PyObject* normMat;
     int hNumOfVectors, hVectorLength;
@@ -119,17 +119,16 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     double eps;
 
     MAT *cHInitMat, *cNormMat;
-    MAT *finalHMat;    
+    MAT *finalHMat;
 
-    if(!PyArg_ParseTuple(args, "OOiiiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
+    if(!PyArg_ParseTuple(args, "OiiOiiid", &hMat, &hNumOfVectors, &hVectorLength, &normMat, &normNumOfVectors, &normVectorLength, &iter, &eps)) {
         return NULL;
     }
-    
+
     cHInitMat = convertPyMatToCMat(hMat, hNumOfVectors, hVectorLength);
     cNormMat = convertPyMatToCMat(normMat, normNumOfVectors, normVectorLength);
 
     finalHMat = createHMat(cHInitMat, cNormMat, iter, eps);
-    freeMat(cHInitMat);
     freeMat(cNormMat);
 
     return convertcMatToPyMat(finalHMat);
@@ -144,15 +143,15 @@ static PyMethodDef symnmfMethods_table[] = {
       PyDoc_STR("Calculate the symetric matrix of a set of data points")},
     {"ddg",
       (PyCFunction) ddg,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the diagonal degree matrix of a set of data points")},
     {"norm",
       (PyCFunction) norm,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the normalized similarity matrix of a set of data points")},
     {"symnmf",
       (PyCFunction) symnmf,
-      METH_VARARGS,           
+      METH_VARARGS,
       PyDoc_STR("Calculate the optimized H matrix given the inialize one, norm matrix, max iteration and eps")},
     {NULL, NULL, 0, NULL}     
 };

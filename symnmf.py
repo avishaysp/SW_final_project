@@ -3,6 +3,9 @@ import numpy as np
 import symnmfssp
 np.random.seed(0)
 
+MAX_ITER = 300
+EPS = 10 ** (-4)
+
 "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ INPUT HANDLING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 
@@ -29,8 +32,8 @@ def get_input():
     try:
         k = int(k)
     except:
-        print("Invalid number of clusters!")
-    assert 1 < k < len(vectors_list), "Invalid number of clusters!"
+        print("An Error Has Occurred")
+    assert 1 < k < len(vectors_list), "An Error Has Occurred"
     goal = GoalEnum.get_goal(goal)
     return k, goal, vectors_list
 
@@ -46,29 +49,52 @@ def file_to_vectors(file_path):
     return vectors
 
 
-def init_H(n, k, m):
+def init_h(n, k, m):
     """
     :param n:   num of vecs
     :param k:   num of clusters
     :param m:   average of all entries of W
     :return:    H matrix
     """
-    high = 2 * (m / k) ** 2
-    print(high)
-    return np.random.uniform(high=high, size=(n, k))
+    high = 2 * (m / k) ** 0.5
+    return np.random.uniform(high=high, size=(n, k)).tolist()
+
+
+def _calc_m(w):
+    total_sum = 0
+    count = 0
+    for vector in w:
+        for value in vector:
+            total_sum += value
+            count += 1
+    return total_sum / count if count != 0 else 0
+
+
+def print_vectors(centroids_list):
+    for centroid in centroids_list:
+        print(",".join([f"{x:.4f}" for x in centroid]))
+    print()
 
 
 def symnmf_main(analysis=False, k=3, goal=GoalEnum.symnmf, vectors_list=None):
     if not analysis:
         k, goal, vectors_list = get_input()
     if goal == GoalEnum.symnmf:
-        pass
+        w = symnmfssp.norm(vectors_list, len(vectors_list), len(vectors_list[0]))
+        h = init_h(len(vectors_list), k, _calc_m(w))
+        result = symnmfssp.symnmf(h, len(h), len(h[0]), w, len(w), len(w[0]), MAX_ITER, EPS)
     elif goal == GoalEnum.sym:
-        pass
+        result = symnmfssp.sym(vectors_list, len(vectors_list), len(vectors_list[0]))
     elif goal == GoalEnum.ddg:
-        pass
+        result = symnmfssp.ddg(vectors_list, len(vectors_list), len(vectors_list[0]))
     elif goal == GoalEnum.norm:
-        pass
+        result = symnmfssp.norm(vectors_list, len(vectors_list), len(vectors_list[0]))
+    else:
+        print("an error has occurred")
+        raise Exception
+    if analysis:
+        return result
+    print_vectors(result)
 
 
 if __name__ == '__main__':
