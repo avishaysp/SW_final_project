@@ -2,8 +2,8 @@ CC = gcc
 CFLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors 
 OBJS = utils.o symnmfImp.o sym.o ddg.o symnmf.o nsm.o readData.o 
 
-program: $(OBJS)
-	$(CC) $(CFLAGS) -o program $(OBJS) -lm
+symnmf: $(OBJS)
+	$(CC) $(CFLAGS) -o symnmf $(OBJS) -lm
 
 utils.o: utils.c utils.h
 	$(CC) $(CFLAGS) -c utils.c 
@@ -27,4 +27,4 @@ readData.o: readData.c readData.h
 	$(CC) $(CFLAGS) -c readData.c 
 
 clean:
-	rm -f $(OBJS) program
+	rm -f $(OBJS) symnmf
