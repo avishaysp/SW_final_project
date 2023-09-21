@@ -2,6 +2,8 @@
 #include "ncm.h"
 
 
+
+
 static double frobeniusNorm(MAT* mat1, MAT* mat2){
     int i, j;
     double norm = 0.0;
@@ -10,7 +12,7 @@ static double frobeniusNorm(MAT* mat1, MAT* mat2){
             norm += pow(mat1->vals[i][j] - mat2->vals[i][j], 2);
         }
     }
-    return sqrt(norm);
+    return norm;
 }
 
 static MAT* transformMat(MAT* mat){
@@ -37,12 +39,12 @@ static MAT* createNext(MAT* initializedH, MAT* numeratorMat, MAT* denominatorMat
 
 static MAT* getNext(MAT* normMAT, MAT* initializedH){
     MAT* numeratorMat = multiplyMat(normMAT, initializedH);
-    MAT* transformMAt = transformMat(initializedH);
-    MAT* denominatorMatLeft = multiplyMat(initializedH, transformMAt);
+    MAT* transformedMat = transformMat(initializedH);
+    MAT* denominatorMatLeft = multiplyMat(initializedH, transformedMat);
     MAT* denominatorMat = multiplyMat(denominatorMatLeft, initializedH);
     MAT* nextMat = createNext(initializedH, numeratorMat, denominatorMat);
     freeMat(numeratorMat);
-    freeMat(transformMAt);
+    freeMat(transformedMat);
     freeMat(denominatorMatLeft);
     freeMat(denominatorMat);
     return nextMat;
@@ -58,6 +60,6 @@ MAT* createHMat(MAT* initializedH, MAT* normMAT, int maxIter, double eps){
         nextMat = getNext(normMAT, initializedH);
         maxIter--;
     }
-    freeMat(nextMat);
-    return initializedH;
+    freeMat(initializedH);
+    return nextMat;
 }
