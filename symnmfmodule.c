@@ -41,18 +41,17 @@ PyObject* convertcMatToPyMat(MAT* matrix){
     matVals = matrix->vals;
 
 
-    pyMatrix = PyList_New(matNumOfVectors);  // Create a new Python list object for the rows
-
+    pyMatrix = PyList_New(matNumOfVectors); 
     if (pyMatrix) {
         for (int i = 0; i < matNumOfVectors; i++) {
-            pyRow = PyList_New(matHVectorLength);  // Create a new Python list object for each row
+            pyRow = PyList_New(matHVectorLength);  
             if (pyRow) {
                 for (int j = 0; j < matHVectorLength; j++) {
-                    pyValue = Py_BuildValue("d", matVals[i][j]);  // Convert C value to Python float
-                    PyList_SET_ITEM(pyRow, j, pyValue);  // Set the value in the Python row list
+                    pyValue = Py_BuildValue("d", matVals[i][j]); 
+                    PyList_SET_ITEM(pyRow, j, pyValue);  
                 }
             }
-            PyList_SET_ITEM(pyMatrix, i, pyRow);  // Set the row list in the Python matrix list
+            PyList_SET_ITEM(pyMatrix, i, pyRow);  
         }
     }
 
@@ -72,7 +71,6 @@ PyObject* operate(PyObject* pyMat, int NumOfVectors, int VectorLength, MatFuncti
 }
 
 
-//Methods
 static PyObject* sym(PyObject *self, PyObject *args){
     
     PyObject* xVector;
@@ -135,7 +133,6 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
 }
 
 
-//Create api
 static PyMethodDef symnmfMethods_table[] = {
     {"sym",
       (PyCFunction) sym,
