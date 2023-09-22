@@ -9,27 +9,28 @@ MAT* executeSymnmf(MAT* cHInitMat, MAT* cNormMat, int iter, double eps){
 }
 
 int main(int argc, char** argv) {
+    MAT* result;
     MAT* matrix = readCSVtoMatrix(argv[2]);
     if (argc > 3){
         exit(1);
     }
 
     if (strcmp(argv[1], "sym") == 0){
-        printMat(createSymMat(matrix));
+        result = createSymMat(matrix);
     }
 
     else if (strcmp(argv[1], "ddg") == 0){
-        printMat(createDdgMat(matrix));
+        result = createDdgMat(matrix);
     }
 
     else if (strcmp(argv[1], "norm") == 0){
-        printMat(createNsmMat(matrix));
+        result = createNsmMat(matrix);
     }
-
     else{
         printf("An Error has Occured");
         exit(1);
     }
-
+    printMat(result);
+    freeMat(result);
     return 0;
 }

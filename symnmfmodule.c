@@ -54,7 +54,7 @@ PyObject* convertcMatToPyMat(MAT* matrix){
             PyList_SET_ITEM(pyMatrix, i, pyRow);  
         }
     }
-
+    freeMat(matrix);
     return pyMatrix;
 }
 
