@@ -1,5 +1,13 @@
 #include "symnmf.h"
 
+MAT* executeOperate(MatFunction goal, MAT* cVectors){
+    return goal(cVectors);
+}
+
+MAT* executeSymnmf(MAT* cHInitMat, MAT* cNormMat, int iter, double eps){
+    return createHMat(cHInitMat, cNormMat, iter, eps);
+}
+
 int main(int argc, char** argv) {
     MAT* matrix = readCSVtoMatrix(argv[2]);
     if (argc > 3){
