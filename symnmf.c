@@ -9,8 +9,8 @@ MAT* executeSymnmf(MAT* cHInitMat, MAT* cNormMat, int iter, double eps){
 }
 
 int main(int argc, char** argv) {
-    printf("%s\n", argv[2]);
-    MAT* matrix = readCSVtoMatrix(argv[2]);
+    MAT* matrix;
+    matrix = readCSVtoMatrix(argv[2]);
     if (argc > 3){
         exit(1);
     }

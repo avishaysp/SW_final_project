@@ -17,7 +17,7 @@ sym.o: sym.c sym.h utils.h
 ddg.o: ddg.c ddg.h sym.h
 	$(CC) $(CFLAGS) -c ddg.c 
 
-symnmf.o: symnmf.c symnmf.h readData.h
+symnmf.o: symnmf.c symnmf.h readData.h symnmfImp.h
 	$(CC) $(CFLAGS) -c symnmf.c 
 
 nsm.o: nsm.c ncm.h ddg.h
