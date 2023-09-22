@@ -1,6 +1,6 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include "symnmfImp.h"
+#include "symnmf.h"
 
 typedef MAT* (*MatFunction)(MAT*);
 
@@ -65,7 +65,7 @@ PyObject* operate(PyObject* pyMat, int NumOfVectors, int VectorLength, MatFuncti
     
     cVectors = convertPyMatToCMat(pyMat, NumOfVectors, VectorLength);
 
-    finalMat = goal(cVectors);
+    finalMat = executeOperate(goal, cVectors);
     freeMat(cVectors);
 
     return convertcMatToPyMat(finalMat);
@@ -128,7 +128,7 @@ static PyObject* symnmf(PyObject *self, PyObject *args){
     cHInitMat = convertPyMatToCMat(hMat, hNumOfVectors, hVectorLength);
     cNormMat = convertPyMatToCMat(normMat, normNumOfVectors, normVectorLength);
 
-    finalHMat = createHMat(cHInitMat, cNormMat, iter, eps);
+    finalHMat = executeSymnmf(cHInitMat, cNormMat, iter, eps);
     freeMat(cNormMat);
 
     return convertcMatToPyMat(finalHMat);
