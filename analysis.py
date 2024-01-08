@@ -6,12 +6,12 @@ from symnmf import symnmf_main, GoalEnum
 
 MAX_ITER = 300
 EPS = 10 ** (-4)
-K = 3
 
 
 def get_input():
-    if len(sys.argv) == 2:
-        file_path = sys.argv[1]
+    if len(sys.argv) == 3:
+        file_path = sys.argv[2]
+        K = int(sys.argv[1])
     else:
         print("An Error Has Occurred")
         exit()
